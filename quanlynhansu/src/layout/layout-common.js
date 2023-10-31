@@ -8,6 +8,7 @@ import { Avatar, Space } from 'antd';
 import './style.scss';
 import ProjectComponent from '../component/project/project-component';
 import HomeComponent from '../component/home/home-component';
+import EmployeeComponent from '../component/employee-component/employee-component';
 const { Header, Content, Footer, Sider } = Layout;
 
 const LayoutCommon = () => {
@@ -115,7 +116,7 @@ function ContentShow() {
     return <div >
         <Routes>
             <Route path='/' element={<HomeComponent></HomeComponent>}></Route>
-            <Route path='/employee' element={<ModelInfoEmployee></ModelInfoEmployee>}></Route>logout
+            <Route path='/employee' element={<EmployeeComponent></EmployeeComponent>}></Route>logout
             <Route path='/project' element={<ProjectComponent ></ProjectComponent>}></Route>
             <Route path='/logout' element={<div>Đăng xuất</div>}></Route>
         </Routes>

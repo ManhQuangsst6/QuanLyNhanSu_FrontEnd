@@ -1,12 +1,25 @@
-.ant-modal{
+.ant-modal {
     width: 800px !important;
 }
-.ant-form{
-    max-width: 800px !important;
+
+.ant-form {
+    // max-width: 800px !important;
 }
-.ant-modal-body{
+
+.ant-modal-body {
     padding: 30px 20px 10px !important;
 }
-.ant-modal{
-    top:36px;
+
+.ant-modal {
+    top: 36px;
+}
+
+.ant-pagination {
+    justify-content: center;
+    padding-top: 10px;
+}
+
+.ant-table-wrapper {
+    //overflow: scroll;
+    border: 1px solid #cacaca;
 }

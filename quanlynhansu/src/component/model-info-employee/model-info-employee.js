@@ -50,7 +50,9 @@ const ModelInfoEmployee = () => {
             <Modal title="Thêm nhân viên" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} >
                 <Form
                     layout="horizontal"
-
+                    style={
+                        { maxWidth: 800 }
+                    }
                 >
                     <Row>
                         <Col span={24}>

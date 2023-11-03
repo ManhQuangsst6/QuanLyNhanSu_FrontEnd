@@ -3,8 +3,8 @@ const name = '/Project'
 export const GetProjects = (textSearch, monthSearch, yearSearch) => {
     let str = `${name}/GetProjects?`
     if (textSearch != "") str += `searchName=` + textSearch + `&`
-    if (monthSearch != "") str += `monthSearch=` + monthSearch + `&`
-    if (yearSearch != "") str += `yearSearch=` + yearSearch + `&`
+    if (monthSearch != "") str += `filterDay=` + monthSearch + `&`
+    if (yearSearch != "") str += `filterMonth=` + yearSearch + `&`
     return apiService.get(str)
 }
 export const DeleteProject = (id) => {

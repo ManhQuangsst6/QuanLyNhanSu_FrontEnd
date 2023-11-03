@@ -1,9 +1,7 @@
 
 import './App.scss';
 import ModelInfoEmployee from './component/model-info-employee/model-info-employee.js'
-import {
-  GetAllDepartment
-} from "./api/departmentAPI";
+
 import LayoutCommon from './layout/layout-common';
 function App() {
   // function TestAPI() {

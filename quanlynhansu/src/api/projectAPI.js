@@ -19,3 +19,6 @@ export const UpdateProject = (data) => {
 export const UpdateComplete = (id) => {
     return apiService.put(`${name}/UpdateComplete?id=` + id)
 }
+export const GetProjectById = (id) => {
+    return apiService.get(`${name}/GetProjectById?id=` + id)
+}

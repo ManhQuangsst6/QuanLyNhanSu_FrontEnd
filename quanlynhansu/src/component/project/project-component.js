@@ -4,10 +4,12 @@ import { EditOutlined, DeleteOutlined, CaretRightOutlined, EyeOutlined, CheckOut
 //import ProjectModelComponent from './project-modal';
 import { useNavigate } from 'react-router-dom';
 import {
-    GetProjects, DeleteProject, UpdateComplete, AddProject, UpdateProject
+    GetProjects, DeleteProject, UpdateComplete, AddProject, UpdateProject, GetEmployeeInProjectView
 } from "../../api/projectAPI";
 import ConvertDate from '../../common/ConvertDateShow';
 import { Modal } from 'antd';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
 
@@ -59,7 +61,7 @@ const ProjectComponent = () => {
                     <a  ><EyeOutlined /></a>
                     <a onClick={() => showModal("EDIT", record)}><EditOutlined /></a>
                     <a onClick={() => DeleteAProject(record.key)}><DeleteOutlined /></a>
-                    <a onClick={() => handleNavigation('/employee')}><CaretRightOutlined /></a>
+                    <a onClick={() => handleNavigation('/project-employee', record.key)}><CaretRightOutlined /></a>
                     {record.DateEnd == null && <a onClick={() => UpdateCompleteProject(record.key)}><CheckOutlined /></a>}
                 </Space>
             ),
@@ -67,8 +69,8 @@ const ProjectComponent = () => {
 
     ];
     const navigate = useNavigate();
-    const handleNavigation = (path) => {
-        navigate(path);
+    const handleNavigation = (path, id) => {
+        navigate(path + `/${id}`);
     };
     const [filter, SetFilter] = useState({
         searchName: '',
@@ -100,6 +102,7 @@ const ProjectComponent = () => {
                     }
                 })
                 SetData(dataShow)
+                console.log(dataShow)
             }).catch(e => {
                 console.log(e)
             })
@@ -108,8 +111,10 @@ const ProjectComponent = () => {
     const DeleteAProject = (id) => {
         DeleteProject(id).then(res => {
             SetIsRender(true)
+            notify("Xóa dự án ")
         }).catch(e => {
             console.log(e)
+            notifyError("Xóa dự án ")
         })
     }
 
@@ -122,6 +127,32 @@ const ProjectComponent = () => {
     const [selectedItems, setSelectedItems] = useState([]);
     const filteredOptions = OPTIONS.filter((o) => !selectedItems.includes(o));
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const notify = (message) => {
+        toast.success(message + ' thành công!', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        });
+    }
+    const notifyError = (message) => {
+        toast.error(message + ' thất bại!', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        });
+    }
+
     const showModal = (state, dataEdit) => {
         setIsModalOpen(true);
         SetState(state)
@@ -154,14 +185,14 @@ const ProjectComponent = () => {
         setIsModalOpen(false);
         if (state === "ADD") {
             AddProject(dataPush).then(res => {
-                console.log(res)
                 SetIsRender(true)
+                notify("Thêm dự án ")
             })
         } else {
 
             UpdateProject(dataPush).then(res => {
-                console.log(res)
                 SetIsRender(true)
+                notify("Sửa dự án ")
             })
         }
         ClearForm()
@@ -171,7 +202,6 @@ const ProjectComponent = () => {
     };
 
     const handleChange = (e) => {
-
         SetDataPush((dataPush) => ({
             ...dataPush,
             [e.target.name]: e.target.value,
@@ -228,6 +258,7 @@ const ProjectComponent = () => {
                     </Row>
                 </Form>
             </div>
+            <ToastContainer />
             <div style={{ marginTop: "16px", }}>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>

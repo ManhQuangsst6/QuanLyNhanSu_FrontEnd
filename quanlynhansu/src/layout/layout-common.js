@@ -9,6 +9,9 @@ import './style.scss';
 import ProjectComponent from '../component/project/project-component';
 import HomeComponent from '../component/home/home-component';
 import EmployeeComponent from '../component/employee-component/employee-component';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import EmployeeProjectComponent from '../component/employeeInProject/employee-project';
 const { Header, Content, Footer, Sider } = Layout;
 
 const LayoutCommon = () => {
@@ -21,7 +24,6 @@ const LayoutCommon = () => {
     useEffect(() => {
         const link = window.location.href.split('/');
         const key = link[link.length - 1]
-        console.log(link, key)
         switch (key) {
             case '':
                 SetTextHeader("Trang chủ");
@@ -40,10 +42,10 @@ const LayoutCommon = () => {
                 breakpoint="lg"
                 collapsedWidth="0"
                 onBreakpoint={(broken) => {
-                    console.log(broken);
+                    // console.log(broken);
                 }}
                 onCollapse={(collapsed, type) => {
-                    console.log(collapsed, type);
+                    // console.log(collapsed, type);
                 }}
             >
                 <div className="demo-logo-vertical" />
@@ -111,14 +113,26 @@ const LayoutCommon = () => {
     );
 };
 function ContentShow() {
-
+    const notify = () => {
+        toast.success('success!', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        });
+    }
 
     return <div >
         <Routes>
             <Route path='/' element={<HomeComponent></HomeComponent>}></Route>
             <Route path='/employee' element={<EmployeeComponent></EmployeeComponent>}></Route>logout
             <Route path='/project' element={<ProjectComponent ></ProjectComponent>}></Route>
-            <Route path='/logout' element={<div>Đăng xuất</div>}></Route>
+            <Route path='/project-employee/:id' element={<EmployeeProjectComponent></EmployeeProjectComponent>}></Route>
+            <Route path='/logout' element={<h1></h1>}></Route>
         </Routes>
     </div>
 }

@@ -146,7 +146,7 @@ const ModelInfoEmployee = ({ listDataDepartment, listDataPosition, listDataSkill
     const handleChangeGender = (e) => {
         setFormData({
             ...formData,
-            gender: e.target.value
+            Gender: e.target.value
         });
     };
     const handleChangeSkills = (selectedSkills) => {

@@ -3,7 +3,7 @@ import { Space, Button, Table, Input, Form, Row, Col, Select, Modal, DatePicker 
 import { EditOutlined, DeleteOutlined, EyeOutlined, PlusSquareOutlined, ArrowUpOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import EmployeeModelComponent from '../model-info-employee/model-info-employee';
 import { GetView_DepartmentList, GetView_PositionList, GetView_ProjectList, GetView_SkillList } from '../../api/listViewAPI';
-import { GetEmployeeViews, DeleteEmployee, DeleteMultipleEmployees, UpdateSalary, UpdateProjectEmployee } from '../../api/EmployeeAPI';
+import { GetEmployeeViews, DeleteEmployee, DeleteMultipleEmployees, UpdateSalary, UpdateProjectEmployee, GetEmployeeByID } from '../../api/EmployeeAPI';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const { Column } = Table;
@@ -51,7 +51,7 @@ const EmployeeComponent = () => {
             render: (_, record) => (
                 <Space size="middle">
                     <a><EyeOutlined /></a>
-                    <a><EditOutlined /></a>
+                    <a onClick={() => ShowFormEdit(record.key)}><EditOutlined /></a>
                     <a onClick={() => RemoveEmployee(record.key)}><DeleteOutlined /></a>
                     <a onClick={() => showModalSalary(record.key, record.Salary)}><ArrowUpOutlined /></a>
                     <a onClick={() => showModalProject(record.key, record.Project)}><PlusSquareOutlined /></a>
@@ -299,6 +299,36 @@ const EmployeeComponent = () => {
     const hideADDModal = () => {
         SetIsShowModalEmployee(false)
     }
+    const [dataEdit, SetDataEdit] = useState({})
+    const ShowFormEdit = (id) => {
+        SetIsShowModalEmployee(true)
+        GetEmployeeByID(id).then(res => {
+            let data = res.data;
+            // data.BirthDate = new Date(data.BirthDate);
+            // data.DateStart = new Date(data.DateStart);
+            SetDataEdit(groupAndMergeSkills(data))
+        })
+    }
+    const ResetTable = () => {
+        SetIsRender(true)
+    }
+    const groupAndMergeSkills = (input) => {
+        const result = {};
+
+        input.forEach(employee => {
+            const id = employee.ID;
+            if (!result[id]) {
+                result[id] = {
+                    ...employee,
+                    skillList: [employee.SkillID]
+                };
+            } else {
+                result[id].skillList.push(employee.SkillID);
+            }
+        });
+
+        return Object.values(result);
+    }
     return (
         <div style={{ padding: 10 }}>
             <div>
@@ -409,6 +439,8 @@ const EmployeeComponent = () => {
                             Thêm
                         </Button>
                         <EmployeeModelComponent
+                            ResetTable={ResetTable}
+                            dataEdit={dataEdit}
                             OnHide={hideADDModal}
                             isShow={isShowModalEmployee}
                             listDataDepartment={listDataDepartment}

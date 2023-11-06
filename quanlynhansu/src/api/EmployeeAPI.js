@@ -40,3 +40,9 @@ export const AddEmployee_Project = (data) => {
 export const DeleteEmployee_Project = (data) => {
     return apiService.post('Employee_Project/DeleteEmployee_Project', data)
 }
+export const GetEmployeeByID = (id) => {
+    return apiService.get(`${name}/GetEmployeeByID?employeeId=` + id)
+}
+export const UpdateEmployee = (data) => {
+    return apiService.post(`${name}/UpdateEmployee`, data)
+}

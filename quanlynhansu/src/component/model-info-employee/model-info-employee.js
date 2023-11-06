@@ -74,50 +74,50 @@ const ModelInfoEmployee = ({ listDataDepartment, listDataPosition, listDataSkill
         //  console.log(formData)
         const errors = {};
 
-        // if (!formData.Name) {
-        //     errors.name = 'Họ tên không được bỏ trống';
-        // }
+        if (!formData.Name) {
+            errors.Name = 'Họ tên không được bỏ trống';
+        }
 
-        // if (!formData.Code) {
-        //     errors.code = 'Mã nhân viên không được bỏ trống';
-        // }
-        // if (!formData.birthDate) {
-        //     errors.birthDate = 'Ngày sinh không được bỏ trống';
-        // }
+        if (!formData.Code) {
+            errors.Code = 'Mã nhân viên không được bỏ trống';
+        }
+        if (!formData.BirthDate) {
+            errors.BirthDate = 'Ngày sinh không được bỏ trống';
+        }
 
-        // if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        //     errors.email = 'Email không hợp lệ';
-        // }
+        if (!formData.Email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            errors.Email = 'Email không hợp lệ';
+        }
 
-        // if (!formData.phoneNumber || !/^\d{10}$/.test(formData.phoneNumber)) {
-        //     errors.phoneNumber = 'Số điện thoại không hợp lệ';
-        // }
+        if (!formData.PhoneNumber || !/^\d{10}$/.test(formData.phoneNumber)) {
+            errors.PhoneNumber = 'Số điện thoại không hợp lệ';
+        }
 
-        // if (!formData.departmentID) {
-        //     errors.departmentID = 'Phòng ban không được bỏ trống';
-        // }
+        if (!formData.DepartmentID) {
+            errors.DepartmentID = 'Phòng ban không được bỏ trống';
+        }
 
-        // if (!formData.positionID) {
-        //     errors.positionID = 'Vị trí không được bỏ trống';
-        // }
+        if (!formData.PositionID) {
+            errors.PositionID = 'Vị trí không được bỏ trống';
+        }
 
-        // if (!formData.dateStart) {
-        //     errors.dateStart = 'Ngày bắt đầu không được bỏ trống';
-        // }
+        if (!formData.DateStart) {
+            errors.DateStart = 'Ngày bắt đầu không được bỏ trống';
+        }
 
-        // if (!formData.salaryAmount || isNaN(parseFloat(formData.salaryAmount))) {
-        //     errors.salaryAmount = 'Mức lương không hợp lệ';
-        // }
+        if (!formData.SalaryAmount || isNaN(parseFloat(formData.salaryAmount))) {
+            errors.SalaryAmount = 'Mức lương không hợp lệ';
+        }
 
-        // if (!formData.address) {
-        //     errors.address = 'Địa chỉ không được bỏ trống';
-        // }
-        // if (formData.skillList.length === 0) {
-        //     errors.skillList = 'Vui lòng chọn ít nhất một kỹ năng';
-        // }
-        // if (!formData.userName && state != "EDIT") {
-        //     errors.userName = 'Tên tài khoản không được bỏ trống';
-        // }
+        if (!formData.Address) {
+            errors.Address = 'Địa chỉ không được bỏ trống';
+        }
+        if (formData.skillList.length === 0) {
+            errors.skillList = 'Vui lòng chọn ít nhất một kỹ năng';
+        }
+        if (!formData.userName && state != "EDIT") {
+            errors.userName = 'Tên tài khoản không được bỏ trống';
+        }
 
         if (Object.keys(errors).length > 0) {
             setFormErrors(errors);

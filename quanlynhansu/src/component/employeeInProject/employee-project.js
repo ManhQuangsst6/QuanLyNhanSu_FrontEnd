@@ -76,6 +76,8 @@ const EmployeeProjectComponent = () => {
     useEffect(() => {
         GetProjectById(id).then(res => {
             SetNameProject(res.data.Name)
+        }).catch(e => {
+            console.log(e)
         })
         // SetDataSearch({
         //     ...dataSearch,
@@ -90,18 +92,28 @@ const EmployeeProjectComponent = () => {
             GetView_DepartmentList().then(res => {
                 let data = res.data.map(item => { return { value: item.ID, label: item.Name } })
                 SetListDataDepartment(data)
+            }).catch(e => {
+                console.log(e)
             })
             GetView_PositionList().then(res => {
                 let data = res.data.map(item => { return { value: item.ID, label: item.Name } })
                 SetListDataPosition(data)
+            }).catch(e => {
+                console.log(e)
+            }).catch(e => {
+                console.log(e)
             })
             GetView_SkillList().then(res => {
                 let data = res.data.map(item => { return { value: item.ID, label: item.Name } })
                 SetListDataSkill(data)
+            }).catch(e => {
+                console.log(e)
             })
             GetView_ProjectList().then(res => {
                 let data = res.data.map(item => { return { value: item.ID, label: item.Name } })
                 SetListDataProject(data)
+            }).catch(e => {
+                console.log(e)
             })
             SetResetData(false)
         }
@@ -148,8 +160,10 @@ const EmployeeProjectComponent = () => {
                         Project: item.Project,
                         Salary: item.Salary,
                     }
-                })
-                SetDataAll(dataShow)
+                }).
+                    SetDataAll(dataShow)
+            }).catch(e => {
+                console.log(e)
             })
 
         }
@@ -194,7 +208,7 @@ const EmployeeProjectComponent = () => {
             nameSearch: '',
             departmentID: '',
             positionID: '',
-            projectID: '',
+            projectID: id,
             skillID: '',
             pageNum: 1,
             pageSize: 5
@@ -234,6 +248,8 @@ const EmployeeProjectComponent = () => {
             console.log(res);
             SetIsRender(true);
             notify("Xóa nhân viên")
+        }).catch(e => {
+            console.log(e)
         })
     }
     ///
@@ -247,9 +263,12 @@ const EmployeeProjectComponent = () => {
         const data = { id: id, employees: selectedRowKeysChoose }
         AddEmployee_Project(data).then(res => {
             console.log(res)
+            setIsModalOpen(false);
+            SetIsRender(true)
+        }).catch(e => {
+            console.log(e)
         })
-        setIsModalOpen(false);
-        SetIsRender(true)
+
         //setSelectedRowKeysChoose([])
     };
 
@@ -272,6 +291,8 @@ const EmployeeProjectComponent = () => {
                 }
             })
             SetDataAll(dataShow)
+        }).catch(e => {
+            console.log(e)
         })
     }
     const [modal, contextHolder] = Modal.useModal();
@@ -286,6 +307,8 @@ const EmployeeProjectComponent = () => {
                 DeleteEmployee_Project(data).then(res => {
                     SetIsRender(true)
                     notify("Xóa nhân viên")
+                }).catch(e => {
+                    console.log(e)
                 })
             },
             cancelText: 'Quay lại',
@@ -313,6 +336,8 @@ const EmployeeProjectComponent = () => {
                 }
             })
             SetDataAll(dataShow)
+        }).catch(e => {
+            console.log(e)
         })
 
     }
@@ -320,7 +345,7 @@ const EmployeeProjectComponent = () => {
         <div style={{ padding: 10 }}>
             <div>
                 <Row>
-                    <Col span={12}>
+                    <Col span={12} className='test'>
                         Tên dự án:{nameProject}
                     </Col>
                 </Row>
@@ -358,25 +383,7 @@ const EmployeeProjectComponent = () => {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col span={3}></Col>
-                        <Col span={5}>
-                            <Form.Item label="Vị trí">
-                                <Select
-                                    showSearch
-                                    style={{
-                                        width: 200,
-                                    }}
-                                    onChange={handleChangeSearchPosition}
-                                    placeholder=""
-                                    optionFilterProp="children"
-                                    filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                                    filterSort={(optionA, optionB) =>
-                                        (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                                    }
-                                    value={dataSearch.positionID}
-                                    options={listDataPosition} />
-                            </Form.Item>
-                        </Col>
+
 
                     </Row>
                     <Row>
@@ -398,7 +405,25 @@ const EmployeeProjectComponent = () => {
                                     options={listDataSkill} />
                             </Form.Item>
                         </Col>
-
+                        <Col span={3}></Col>
+                        <Col span={5}>
+                            <Form.Item label="Vị trí">
+                                <Select
+                                    showSearch
+                                    style={{
+                                        width: 200,
+                                    }}
+                                    onChange={handleChangeSearchPosition}
+                                    placeholder=""
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) => (option?.label ?? '').includes(input)}
+                                    filterSort={(optionA, optionB) =>
+                                        (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                                    }
+                                    value={dataSearch.positionID}
+                                    options={listDataPosition} />
+                            </Form.Item>
+                        </Col>
                         <Col span={3}></Col>
                         <Col span={5}>
                             <Button type="primary" style={{ marginRight: 10 }} onClick={Filter}> Lọc </Button>
@@ -417,7 +442,7 @@ const EmployeeProjectComponent = () => {
                         <Button type="primary" ghost onClick={() => showModal("ADD")} style={{ marginRight: 16 }}>
                             Thêm
                         </Button>
-                        <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
+                        <Modal title="Danh sách nhân viên" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
                             width={1000}>
                             <div>
                                 <Form
@@ -451,7 +476,11 @@ const EmployeeProjectComponent = () => {
                                                 />
                                             </Form.Item>
                                         </Col>
-                                        <Col span={3}></Col>
+
+
+
+                                    </Row>
+                                    <Row>
                                         <Col span={5}>
                                             <Form.Item label="Vị trí">
                                                 <Select
@@ -470,9 +499,7 @@ const EmployeeProjectComponent = () => {
                                                     options={listDataPosition} />
                                             </Form.Item>
                                         </Col>
-
-                                    </Row>
-                                    <Row>
+                                        <Col span={3}></Col>
                                         <Col span={5}>
                                             <Form.Item label="Skill">
                                                 <Select
@@ -493,24 +520,7 @@ const EmployeeProjectComponent = () => {
                                         </Col>
                                         <Col span={3}></Col>
 
-                                        <Col span={10}>
-                                            <Form.Item label="Project">
-                                                <Select
-                                                    showSearch
-                                                    style={{
-                                                        width: 200,
-                                                    }}
-                                                    onChange={handleChangeSearchProject}
-                                                    placeholder=""
-                                                    optionFilterProp="children"
-                                                    filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                                                    filterSort={(optionA, optionB) =>
-                                                        (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                                                    }
-                                                    value={dataSearch.projectID}
-                                                    options={listDataProject} />
-                                            </Form.Item>
-                                        </Col>
+
                                         <Col span={5}>
                                             <Button type="primary" style={{ marginRight: 10 }} onClick={FilterDataModal}> Lọc </Button>
                                             <Button onClick={ClearFilter}>Làm mới </Button>
@@ -547,13 +557,7 @@ const EmployeeProjectComponent = () => {
                 </div>
                 <Table rowSelection={{ selectedRowKeys, onChange: setSelectedRowKeys }}
                     columns={columns} dataSource={DataTable}
-                    pagination={{
-                        pageSize: 5,
-                        total: totalPages,
-                        onChange: (page) => {
-                            fetchRecords(page);
-                        },
-                    }} />
+                />
             </div>
             <ToastContainer />
         </div>

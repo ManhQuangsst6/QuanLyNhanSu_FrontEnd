@@ -61,7 +61,7 @@ const ProjectComponent = () => {
                     <a  ><EyeOutlined /></a>
                     <a onClick={() => showModal("EDIT", record)}><EditOutlined /></a>
                     <a onClick={() => DeleteAProject(record.key)}><DeleteOutlined /></a>
-                    <a onClick={() => handleNavigation('/project-employee', record.key)}><CaretRightOutlined /></a>
+                    {record.DateEnd == null && <a onClick={() => handleNavigation('/project-employee', record.key)}><CaretRightOutlined /></a>}
                     {record.DateEnd == null && <a onClick={() => UpdateCompleteProject(record.key)}><CheckOutlined /></a>}
                 </Space>
             ),
@@ -179,6 +179,9 @@ const ProjectComponent = () => {
     const UpdateCompleteProject = (id) => {
         UpdateComplete(id).then(res => {
             SetIsRender(true)
+            notify("Dự án đã kết thúc")
+        }).catch(e => {
+            console.log(e)
         })
     }
     const handleOk = () => {
@@ -187,12 +190,16 @@ const ProjectComponent = () => {
             AddProject(dataPush).then(res => {
                 SetIsRender(true)
                 notify("Thêm dự án ")
+            }).catch(e => {
+                console.log(e)
             })
         } else {
 
             UpdateProject(dataPush).then(res => {
                 SetIsRender(true)
                 notify("Sửa dự án ")
+            }).catch(e => {
+                console.log(e)
             })
         }
         ClearForm()
@@ -310,7 +317,11 @@ const ProjectComponent = () => {
                         {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
                     </span>
                 </div>
-                <Table rowSelection={rowSelection} columns={columns} dataSource={data} >
+                <Table rowSelection={rowSelection} columns={columns} dataSource={data}
+
+                    pagination={{
+                        pageSize: 5
+                    }}>
 
 
                 </Table>

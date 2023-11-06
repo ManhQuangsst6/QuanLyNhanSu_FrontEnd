@@ -3,9 +3,13 @@ import { Space, Button, Table, Input, Form, Row, Col, Select, Modal, DatePicker 
 import { EditOutlined, DeleteOutlined, EyeOutlined, PlusSquareOutlined, ArrowUpOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import EmployeeModelComponent from '../model-info-employee/model-info-employee';
 import { GetView_DepartmentList, GetView_PositionList, GetView_ProjectList, GetView_SkillList } from '../../api/listViewAPI';
-import { GetEmployeeViews, DeleteEmployee, DeleteMultipleEmployees, UpdateSalary, UpdateProjectEmployee, GetEmployeeByID } from '../../api/EmployeeAPI';
+import {
+    GetEmployeeViews, DeleteEmployee, DeleteMultipleEmployees, UpdateSalary,
+    UpdateProjectEmployee, GetEmployeeByID, GetEmployeeOBJ
+} from '../../api/EmployeeAPI';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ModalShowInfoEmployee from '../model-info-employee/modal-show-info-employee';
 const { Column } = Table;
 const { Search } = Input;
 
@@ -50,16 +54,29 @@ const EmployeeComponent = () => {
             width: '15%',
             render: (_, record) => (
                 <Space size="middle">
-                    <a><EyeOutlined /></a>
+                    <a onClick={() => ShowInfoEmployee(record.key)}>
+                        <EyeOutlined /></a>
                     <a onClick={() => ShowFormEdit(record.key)}><EditOutlined /></a>
-                    <a onClick={() => RemoveEmployee(record.key)}><DeleteOutlined /></a>
-                    <a onClick={() => showModalSalary(record.key, record.Salary)}><ArrowUpOutlined /></a>
-                    <a onClick={() => showModalProject(record.key, record.Project)}><PlusSquareOutlined /></a>
+                    <a onClick={() => RemoveEmployee(record.key, record.Name)}><DeleteOutlined /></a>
+                    <a onClick={() => showModalSalary(record.key, record.Salary, record.Name)}><ArrowUpOutlined /></a>
+                    <a onClick={() => showModalProject(record.key, record.Project, record.Name)}><PlusSquareOutlined /></a>
                 </Space>
             ),
         },
     ];
+    const ShowInfoEmployee = (id) => {
+        GetEmployeeOBJ(id).then(res => {
+            console.log(res.data)
+            SetDataInfoEmployee(res.data)
+            SetIsShowInfo(true)
+        })
+    }
+    const HideInfoEmployee = () => {
+        SetIsShowInfo(false)
+    }
     const [modal, contextHolder] = Modal.useModal();
+    const [isShowInfo, SetIsShowInfo] = useState(false)
+    const [DataInfoEmployee, SetDataInfoEmployee] = useState({})
     const [totalPages, setTotalPages] = useState(10);
     const [DataTable, SetDataTable] = useState([])
     const [isRender, SetIsRender] = useState(true);
@@ -72,6 +89,7 @@ const EmployeeComponent = () => {
     const [listDataProject, SetListDataProject] = useState([])
     const [currentID, SetCurrentID] = useState('')
     const [salaryCurrent, SetSalaryCurrent] = useState('')
+    const [nameEmployeeCurrent, SetNameEmployeeCurrent] = useState('')
     const [projectCurrent, SetProjectCurrent] = useState('')
     const [dataUpdateProject, SetDataUpdateProject] = useState({ employeeId: '', projectId: '', startDate: '' })
     const [dataUpdateSalary, SetDataUpdateSalary] = useState({ employeeId: '', salaryAmount: '', startDate: '' })
@@ -108,18 +126,26 @@ const EmployeeComponent = () => {
             GetView_DepartmentList().then(res => {
                 let data = res.data.map(item => { return { value: item.ID, label: item.Name } })
                 SetListDataDepartment(data)
+            }).catch(e => {
+                console.log(e)
             })
             GetView_PositionList().then(res => {
                 let data = res.data.map(item => { return { value: item.ID, label: item.Name } })
                 SetListDataPosition(data)
+            }).catch(e => {
+                console.log(e)
             })
             GetView_SkillList().then(res => {
                 let data = res.data.map(item => { return { value: item.ID, label: item.Name } })
                 SetListDataSkill(data)
+            }).catch(e => {
+                console.log(e)
             })
             GetView_ProjectList().then(res => {
                 let data = res.data.map(item => { return { value: item.ID, label: item.Name } })
                 SetListDataProject(data)
+            }).catch(e => {
+                console.log(e)
             })
             SetResetData(false)
         }
@@ -141,6 +167,8 @@ const EmployeeComponent = () => {
                 })
                 SetDataTable(dataShow)
                 SetIsRender(false)
+            }).catch(e => {
+                console.log(e)
             })
         }
     }, [isRender])
@@ -217,17 +245,29 @@ const EmployeeComponent = () => {
             theme: "colored",
         });
     }
-    const RemoveEmployee = (id) => {
-        DeleteEmployee(id).then(res => {
-            console.log(res);
-            SetIsRender(true);
-            notify("Xóa nhân viên")
-        })
+    const RemoveEmployee = (id, name) => {
+        modal.confirm({
+            title: 'Confirm',
+            icon: <ExclamationCircleOutlined />,
+            content: 'Xác nhận muốn xóa nhân viên ' + name,
+            okText: 'Xóa',
+            onOk() {
+                DeleteEmployee(id).then(res => {
+                    SetIsRender(true);
+                    notify("Xóa nhân viên")
+                }).catch(e => {
+                    console.log(e)
+                })
+            },
+            cancelText: 'Quay lại',
+        });
+
     }
     // modal
     const [isModalOpenSalary, setIsModalOpenSalary] = useState(false);
 
-    const showModalSalary = (id, salary) => {
+    const showModalSalary = (id, salary, name) => {
+        SetNameEmployeeCurrent(name)
         SetSalaryCurrent(salary)
         setIsModalOpenSalary(true);
         SetDataUpdateSalary((dataUpdateSalary) => ({
@@ -242,6 +282,9 @@ const EmployeeComponent = () => {
         UpdateSalary(dataUpdateSalary).then(res => {
             notify("Cập nhật mức lương ")
             SetIsRender(true)
+            SetDataUpdateSalary({ employeeId: '', projectId: '', startDate: '' })
+        }).catch(e => {
+            console.log(e)
         })
     };
 
@@ -250,7 +293,8 @@ const EmployeeComponent = () => {
     };
     const [isModalOpenProject, setIsModalOpenProject] = useState(false);
 
-    const showModalProject = (id, name) => {
+    const showModalProject = (id, name, nameEmployee) => {
+        SetNameEmployeeCurrent(nameEmployee)
         SetProjectCurrent(name)
         setIsModalOpenProject(true);
         SetDataUpdateProject((dataUpdateProject) => ({
@@ -270,6 +314,9 @@ const EmployeeComponent = () => {
         UpdateProjectEmployee(dataUpdateProject).then(res => {
             SetIsRender(true)
             notify("Them vao du an ")
+            SetDataUpdateProject({ employeeId: '', salaryAmount: '', startDate: '' })
+        }).catch(e => {
+            console.log(e)
         })
     };
 
@@ -281,12 +328,14 @@ const EmployeeComponent = () => {
         modal.confirm({
             title: 'Confirm',
             icon: <ExclamationCircleOutlined />,
-            content: 'Bla bla ...',
+            content: 'Xác nhận muốn xóa ?',
             okText: 'Xóa',
             onOk() {
                 DeleteMultipleEmployees(selectedRowKeys).then(res => {
                     SetIsRender(true)
                     notify("Xóa nhân viên")
+                }).catch(e => {
+                    console.log(e)
                 })
             },
             cancelText: 'Quay lại',
@@ -304,9 +353,9 @@ const EmployeeComponent = () => {
         SetIsShowModalEmployee(true)
         GetEmployeeByID(id).then(res => {
             let data = res.data;
-            // data.BirthDate = new Date(data.BirthDate);
-            // data.DateStart = new Date(data.DateStart);
             SetDataEdit(groupAndMergeSkills(data))
+        }).catch(e => {
+            console.log(e)
         })
     }
     const ResetTable = () => {
@@ -466,7 +515,14 @@ const EmployeeComponent = () => {
 
             <Modal title="Cập nhật mức lương" open={isModalOpenSalary} onOk={handleOkSalary} onCancel={handleCancelSalary}
                 style={{ padding: 0 }}>
-                <Row style={{ padding: '10px 0' }}>Mức lương hiện tại :{salaryCurrent}
+                <Row style={{ padding: '10px 0' }}>
+                    <Col span={12}>
+                        Tên nhân viên : {nameEmployeeCurrent}
+                    </Col>
+                    <Col span={12}>
+                        Mức lương hiện tại : {salaryCurrent}
+                    </Col>
+
                 </Row>
                 <br></br>
                 <Row>
@@ -482,7 +538,14 @@ const EmployeeComponent = () => {
                 </Row>
             </Modal>
             <Modal title="Thêm vào dự án" open={isModalOpenProject} onOk={handleOkProject} onCancel={handleCancelProject}>
-                <Row style={{ padding: '10px 0' }}>Dự án hiện tại : {projectCurrent}
+                <Row style={{ padding: '10px 0' }}>
+                    <Col span={12}>
+                        Tên nhân viên : {nameEmployeeCurrent}
+                    </Col>
+                    <Col span={12}>
+                        Dự án hiện tại : {projectCurrent}
+                    </Col>
+
                 </Row>
                 <br></br>
                 <Row>
@@ -510,6 +573,7 @@ const EmployeeComponent = () => {
                     <Col span={6}><  DatePicker onChange={ChangeDataupdateProjectDate} value={dataUpdateProject.startDate} /></Col>
                 </Row>
             </Modal>
+            <ModalShowInfoEmployee data={DataInfoEmployee} HideInfoEmployee={HideInfoEmployee} isModalOpen={isShowInfo} />
         </div>
 
     );

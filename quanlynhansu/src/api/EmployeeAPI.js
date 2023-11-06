@@ -46,3 +46,6 @@ export const GetEmployeeByID = (id) => {
 export const UpdateEmployee = (data) => {
     return apiService.post(`${name}/UpdateEmployee`, data)
 }
+export const GetEmployeeOBJ = (id) => {
+    return apiService.get(`${name}/GetEmployeeOBJ?employeeId=` + id)
+}

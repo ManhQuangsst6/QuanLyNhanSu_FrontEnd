@@ -34,6 +34,28 @@ const ModelInfoEmployee = ({ listDataDepartment, listDataPosition, listDataSkill
     // const [selectedItems, setSelectedItems] = useState([]);
     //const filteredOptions = OPTIONS.filter((o) => !selectedItems.includes(o));
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const ClearForm = () => {
+        setFormData({
+            ID: '',
+            Code: '',
+            Name: '',
+            BirthDate: null,
+            Address: '',
+            PhoneNumber: '',
+            Email: '',
+            DepartmentID: '',
+            PositionID: '',
+            DateStart: null,
+            Gender: 0,
+            UserID: '',
+            Avatar: '',
+            userName: '',
+            skillList: [],
+            salaryID: '',
+            SalaryAmount: 0,
+            salaryStartDate: null
+        })
+    }
     const [formData, setFormData] = useState({
         ID: '',
         Code: '',
@@ -85,11 +107,11 @@ const ModelInfoEmployee = ({ listDataDepartment, listDataPosition, listDataSkill
             errors.BirthDate = 'Ngày sinh không được bỏ trống';
         }
 
-        if (!formData.Email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        if (!formData.Email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.Email)) {
             errors.Email = 'Email không hợp lệ';
         }
 
-        if (!formData.PhoneNumber || !/^\d{10}$/.test(formData.phoneNumber)) {
+        if (!formData.PhoneNumber || !/^\d{10}$/.test(formData.PhoneNumber)) {
             errors.PhoneNumber = 'Số điện thoại không hợp lệ';
         }
 
@@ -105,7 +127,7 @@ const ModelInfoEmployee = ({ listDataDepartment, listDataPosition, listDataSkill
             errors.DateStart = 'Ngày bắt đầu không được bỏ trống';
         }
 
-        if (!formData.SalaryAmount || isNaN(parseFloat(formData.salaryAmount))) {
+        if (!formData.SalaryAmount || isNaN(parseFloat(formData.SalaryAmount))) {
             errors.SalaryAmount = 'Mức lương không hợp lệ';
         }
 
@@ -130,6 +152,9 @@ const ModelInfoEmployee = ({ listDataDepartment, listDataPosition, listDataSkill
                 setIsModalOpen(false);
                 OnHide()
                 ResetTable()
+                setFormData({})
+            }).catch(e => {
+                console.log(e)
             })
         }
         else {
@@ -138,9 +163,13 @@ const ModelInfoEmployee = ({ listDataDepartment, listDataPosition, listDataSkill
                 setIsModalOpen(false);
                 OnHide()
                 ResetTable()
+                setFormData({})
+            }).catch(e => {
+                console.log(e)
             })
         }
         SetState("")
+        ClearForm()
     };
 
     const handleChangeGender = (e) => {
@@ -161,6 +190,7 @@ const ModelInfoEmployee = ({ listDataDepartment, listDataPosition, listDataSkill
     // };
 
     const handleCancel = () => {
+        ClearForm()
         SetState("")
         setIsModalOpen(false);
         OnHide()
